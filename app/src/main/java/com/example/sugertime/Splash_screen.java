@@ -2,7 +2,9 @@ package com.example.sugertime;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -11,11 +13,13 @@ import android.widget.TextView;
 
 public class Splash_screen extends AppCompatActivity {
 
-    ImageView splash_IMG_imageDisplay;
-    TextView splash_LBL_title;
+    private ImageView splash_IMG_imageDisplay;
+    private TextView splash_LBL_title;
 
-    Animation splash_top_animation;
-    Animation splash_bottom_Animation;
+    private Animation splash_top_animation;
+    private Animation splash_bottom_Animation;
+
+    private final int SPLASH_SCREEN = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,19 @@ public class Splash_screen extends AppCompatActivity {
 
         findView();
         initAnimation();
+
+        handlerSplashScreen();
+    }
+
+    private void handlerSplashScreen() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(Splash_screen.this, logIn_screen.class);
+                startActivity(intent);
+                finish();
+            }
+        }, SPLASH_SCREEN);
     }
 
     private void initAnimation() {
