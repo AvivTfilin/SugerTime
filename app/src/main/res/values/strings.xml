@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">SugerTime</string>
+
+    <string name="splash_title">SugerTime</string>
+
+    <string name="login_title">Hello there\nWelcome Back</string>
+    <string name="login_loginString">Sign In to continue</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_log_in_button">LOG IN</string>
+    <string name="login_sing_up_string">New User?</string>
+    <string name="login_sing_up_button">SIGN UP</string>
+
+    <string name="signUp_title">Welcome</string>
+    <string name="signUp_signUp_string">SignUp to start buy sweet things</string>
+    <string name="singUp_fullName_hint">Full Name</string>
+    <string name="singUp_username_hint">Username</string>
+    <string name="singUp_email_hint">Email</string>
+    <string name="singUp_role_hint">Role</string>
+    <string name="singUp_password_hint">Password</string>
+    <string name="signUp_submit">Submit</string>
+    <string name="signUp_back">Already have an account? LogIn</string>
 </resources>

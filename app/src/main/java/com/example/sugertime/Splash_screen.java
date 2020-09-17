@@ -2,9 +2,12 @@ package com.example.sugertime;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Pair;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,7 +22,7 @@ public class Splash_screen extends AppCompatActivity {
     private Animation splash_top_animation;
     private Animation splash_bottom_Animation;
 
-    private final int SPLASH_SCREEN = 5000;
+    private final int SPLASH_SCREEN = 4000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +44,14 @@ public class Splash_screen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(Splash_screen.this, logIn_screen.class);
-                startActivity(intent);
-                finish();
+                Intent intent = new Intent(Splash_screen.this, Login_screen.class);
+
+                Pair pair = new Pair<View,String>(splash_LBL_title, "logo_text");
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(Splash_screen.this, pair);
+                    startActivity(intent, options.toBundle());
+                }
             }
         }, SPLASH_SCREEN);
     }
