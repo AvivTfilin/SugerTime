@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "335444021282",
+    "firebase_url": "https://sugertime-db.firebaseio.com",
+    "project_id": "sugertime-db",
+    "storage_bucket": "sugertime-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335444021282:android:ea777ff919f88c8c77ba7b",
+        "android_client_info": {
+          "package_name": "com.example.sugertime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "335444021282-3q7r6cl162hekmojum9hvja2oice3imo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC69C8oZS7jZVOrxcQRxX_DcyB7efyTnx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "335444021282-3q7r6cl162hekmojum9hvja2oice3imo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
