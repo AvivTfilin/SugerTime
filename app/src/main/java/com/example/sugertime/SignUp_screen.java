@@ -10,6 +10,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUp_screen extends AppCompatActivity {
 
@@ -23,6 +25,7 @@ public class SignUp_screen extends AppCompatActivity {
     private Button signUp_BTN_back;
 
     private CheckInputValue checkInputValue;
+    private DatabaseReference mDatabase;
 
 
     @Override
@@ -61,6 +64,15 @@ public class SignUp_screen extends AppCompatActivity {
                 !checkInputValue.validatePassword(signUp_LAY_password)){
             return;
         }
+
+        User user = new User(signUp_LAY_fullName.getEditText().getText().toString(), signUp_LAY_userName.getEditText().getText().toString(),
+                signUp_LAY_email.getEditText().getText().toString(), signUp_LAY_role.getEditText().getText().toString(),
+                signUp_LAY_password.getEditText().getText().toString());
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users/");
+        mDatabase.child(user.getKey()).setValue(user);
+
+        finish();
     }
 
     private void findView() {
