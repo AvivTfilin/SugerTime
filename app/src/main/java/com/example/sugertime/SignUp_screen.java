@@ -1,5 +1,6 @@
 package com.example.sugertime;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -10,8 +11,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignUp_screen extends AppCompatActivity {
 
@@ -34,6 +39,7 @@ public class SignUp_screen extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_screen);
 
         checkInputValue = new CheckInputValue();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users/");
 
         setDropDown();
         findView();
@@ -65,14 +71,41 @@ public class SignUp_screen extends AppCompatActivity {
             return;
         }
 
+        checkIfUsernameExist();
+    }
+
+    private void checkIfUsernameExist() {
+
+        Query checkUser = mDatabase.orderByChild("userName").equalTo(signUp_LAY_userName.getEditText().getText().toString());
+
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    signUp_LAY_userName.setError("A USERNAME already exists in the system");
+                } else {
+                    signUp_LAY_userName.setError(null);
+                    signUp_LAY_userName.setErrorEnabled(false);
+
+                    addUser();
+
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void addUser() {
         User user = new User(signUp_LAY_fullName.getEditText().getText().toString(), signUp_LAY_userName.getEditText().getText().toString(),
                 signUp_LAY_email.getEditText().getText().toString(), signUp_LAY_role.getEditText().getText().toString(),
                 signUp_LAY_password.getEditText().getText().toString());
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("Users/");
-        mDatabase.child(user.getKey()).setValue(user);
-
-        finish();
+        mDatabase.child(user.getUserName()).setValue(user);
     }
 
     private void findView() {
