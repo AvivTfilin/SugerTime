@@ -20,4 +20,11 @@
     <string name="singUp_password_hint">Password</string>
     <string name="signUp_submit">Submit</string>
     <string name="signUp_back">Already have an account? LogIn</string>
+
+    <string name="update_title">Update page:</string>
+    <string name="update_text_name">Name of the store:</string>
+    <string name="update_text_description">Write a description about your store:</string>
+    <string name="update_text_image">Add Image:</string>
+    <string name="update_button_image">Upload</string>
+    <string name="update_button_finish">FINISH</string>
 </resources>

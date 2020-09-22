@@ -84,7 +84,9 @@ public class Login_screen extends AppCompatActivity {
                         logIn_LAY_password.setError(null);
                         logIn_LAY_password.setErrorEnabled(false);
 
-                        goToNewActivity();
+                        goToNewActivity(snapshot.child(userEnteredUsername).child("role").getValue(String.class),
+                                snapshot.child(userEnteredUsername).child("createPage").getValue(boolean.class),
+                                userEnteredUsername);
 
                     } else {
                         logIn_LAY_password.setError("Wrong Password");
@@ -103,8 +105,20 @@ public class Login_screen extends AppCompatActivity {
         });
     }
 
-    private void goToNewActivity() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+    private void goToNewActivity(String clientType, boolean createPage, String username) {
+        Intent intent;
+        if(clientType.equals("Seller")){
+            if (createPage){
+                intent = new Intent(getApplicationContext(), Seller_screen.class);
+            } else {
+                intent = new Intent(getApplicationContext(), Update_screen.class);
+            }
+        }
+        else {
+            intent = new Intent(getApplicationContext(), MainActivity.class);
+        }
+        intent.putExtra("username", username);
+        intent.putExtra("createPage", createPage);
         startActivity(intent);
         finish();
     }

@@ -103,7 +103,7 @@ public class SignUp_screen extends AppCompatActivity {
     private void addUser() {
         User user = new User(signUp_LAY_fullName.getEditText().getText().toString(), signUp_LAY_userName.getEditText().getText().toString(),
                 signUp_LAY_email.getEditText().getText().toString(), signUp_LAY_role.getEditText().getText().toString(),
-                signUp_LAY_password.getEditText().getText().toString());
+                signUp_LAY_password.getEditText().getText().toString(),false);
 
         mDatabase.child(user.getUserName()).setValue(user);
     }
