@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -75,12 +76,22 @@ public class Update_screen extends AppCompatActivity {
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         isCreatePage = intent.getBooleanExtra("createPage", false);
 
-
         findView();
+
+        Bundle data = getIntent().getExtras();
+        shop = (Shop) data.getSerializable("shopInfo");
+
+        if (shop != null) {
+            isCreatePage = true;
+            showDetilesOnScreen();
+        }
+
         initButton();
     }
 
@@ -96,7 +107,7 @@ public class Update_screen extends AppCompatActivity {
         update_BTN_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isChoose) {
+                if (isChoose) {
                     storeImage();
                 }
             }
@@ -150,7 +161,7 @@ public class Update_screen extends AppCompatActivity {
                 });
     }
 
-    private void chooseImage(){
+    private void chooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -161,7 +172,7 @@ public class Update_screen extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             update_IMG_picture.setImageURI(imageUri);
             isChoose = true;
@@ -179,29 +190,51 @@ public class Update_screen extends AppCompatActivity {
     }
 
     private void updateInformation() {
+
         if (!isCreatePage) {
             saveInDB();
         } else {
             updateDB();
         }
-
     }
 
     private void updateDB() {
+        if (!shop.getShopName().equals(update_LAY_storeName.getEditText().getText().toString())) {
+            update_LAY_storeName.setError("YOU CAN'T CHANGE THE NAME OF YOUR SHOP");
+            update_LAY_storeName.getEditText().setText(shop.getShopName());
+        } else {
 
+            if (!shop.getDescription().equals(update_LAY_description.getEditText().getText().toString())) {
+                shop.setDescription(update_LAY_description.getEditText().getText().toString());
+                checkInputValue();
+                mDatabase.child("Confectioneries/").child(shop.getOwner() + "/").child("description/").setValue(update_LAY_description.getEditText().getText().toString());
+            }
+
+            if (imageList.size() != 0) {
+                for (int i = 0; i < imageList.size(); i++) {
+                    shop.getImageList().add(imageList.get(i));
+                    mDatabase.child("Confectioneries/").child(shop.getOwner() + "/").child("imageList/")
+                            .child("" + (shop.getImageList().size() - 1) + "/").setValue(imageList.get(i));
+                }
+            }
+            openNewActivity();
+        }
+    }
+
+    private void showDetilesOnScreen() {
+        update_LAY_storeName.getEditText().setText(shop.getShopName());
+        update_LAY_description.getEditText().setText(shop.getDescription());
     }
 
     private void saveInDB() {
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
         checkInputValue();
         checkIfStoreNameExistAndAddToDB();
     }
 
     private void addShopToDB() {
-        shop = new Shop(update_LAY_storeName.getEditText().getText().toString(),update_LAY_description.getEditText().getText().toString(),username,imageList);
-        mDatabase.child("Confectioneries/").child(shop.getShopName()).setValue(shop);
+        shop = new Shop(update_LAY_storeName.getEditText().getText().toString(), update_LAY_description.getEditText().getText().toString(), username, imageList);
 
+        mDatabase.child("Confectioneries/").child(shop.getOwner()).setValue(shop);
         mDatabase.child("Users/").child(username + "/").child("createPage").setValue(true);
 
         openNewActivity();
@@ -221,7 +254,6 @@ public class Update_screen extends AppCompatActivity {
     }
 
     private void checkIfStoreNameExistAndAddToDB() {
-
         Query checkUser = mDatabase.orderByChild("shopName").equalTo(update_LAY_storeName.getEditText().getText().toString());
 
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
