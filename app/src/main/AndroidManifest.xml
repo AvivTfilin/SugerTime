@@ -36,7 +36,6 @@
             android:name=".Buyer_screen"
             android:label="@string/title_activity_buyer_screen" />
         <activity android:name=".Update_screen" />
-        <activity android:name=".Seller_screen" />
         <activity android:name=".SignUp_screen" />
         <activity android:name=".Login_screen" />
         <activity android:name=".Splash_screen">
@@ -46,7 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

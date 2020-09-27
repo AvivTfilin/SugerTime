@@ -144,7 +144,7 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
                         GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                         shop.setImageList(snapshot.child("imageList").getValue(t));
 
-                        Intent intent = new Intent(getApplicationContext(), Seller_screen.class);
+                        Intent intent = new Intent(getApplicationContext(), ShopPage_screen.class);
                         intent.putExtra("shopInfo", shop);
                         intent.putExtra("isBuyer", true);
 
@@ -158,11 +158,6 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
 
                     }
                 });
-
-
-
-
-
 
                 return false;
             }

@@ -100,7 +100,7 @@ public class Review_screen extends AppCompatActivity {
     }
 
     private void returnToBuyerScreen() {
-        Intent intent = new Intent(getApplicationContext(), Seller_screen.class);
+        Intent intent = new Intent(getApplicationContext(), ShopPage_screen.class);
         intent.putExtra("shopInfo", shop);
         intent.putExtra("isBuyer",true);
         startActivity(intent);

@@ -235,7 +235,7 @@ public class Update_screen extends AppCompatActivity {
     }
 
     private void openNewActivity() {
-        Intent newIntent = new Intent(getApplicationContext(), Seller_screen.class);
+        Intent newIntent = new Intent(getApplicationContext(), ShopPage_screen.class);
         newIntent.putExtra("shopInfo", shop);
         startActivity(newIntent);
         finish();

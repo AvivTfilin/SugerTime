@@ -109,7 +109,7 @@ public class Login_screen extends AppCompatActivity {
         Intent intent;
         if(clientType.equals("Seller")){
             if (createPage){
-                intent = new Intent(getApplicationContext(), Seller_screen.class);
+                intent = new Intent(getApplicationContext(), ShopPage_screen.class);
             } else {
                 intent = new Intent(getApplicationContext(), Update_screen.class);
             }

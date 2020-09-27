@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/cookie"
-            android:textColor="#000000"
+            android:textColor="#0D1E78"
             android:textSize="50sp"
             android:padding="20dp"
             android:gravity="center"/>
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:backgroundTint="#7A8CEC"
+            android:backgroundTint="#0D1E78"
             android:layout_alignParentRight="true"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_chat"/>
@@ -67,7 +67,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/seller_RCV_pictureList"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"/>
 
     <LinearLayout
         android:id="@+id/seller_LAY_buttons"
@@ -109,6 +110,7 @@
 
     <FrameLayout
         android:id="@+id/seller_LAY_reviewList"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
