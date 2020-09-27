@@ -31,4 +31,20 @@
     <string name="seller_button_update">Update page</string>
     <string name="seller_button_chat">Chat List</string>
     <string name="seller_text_description">Description:</string>
+
+    <string name="seller_button_review">Add Review</string>
+
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_buyer_screen">Map</string>
+
+    <string name="review_text_title">Add Review:</string>
+    <string name="review_text_ratingBar">How many stars from the sky would you like to bring to this store:</string>
+    <string name="review_text_textFiled">Please share with everyone how delicious was our service:</string>
+    <string name="review_text_button">Submit</string>
+
+    <string name="reviewFragment_text">All review:</string>
+    <string name="reviewFragment_text_0">There are not reviews yet</string>
+
+    <string name="createShop_title">Create Shop:</string>
+    <string name="createShop_addres">Store address:</string>
 </resources>

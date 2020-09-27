@@ -2,7 +2,6 @@ package com.example.sugertime;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ public class RecyclePictureAdapter extends RecyclerView.Adapter<RecyclePictureAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.d("pttt",pictureList.get(position));
         holder.image_IMG_picture.setImageURI(Uri.parse(pictureList.get(position)));
 
         Glide.with(context).load(pictureList.get(position)).into(holder.image_IMG_picture);
@@ -49,11 +47,12 @@ public class RecyclePictureAdapter extends RecyclerView.Adapter<RecyclePictureAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView image_IMG_picture;
+        private ImageView image_IMG_picture;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image_IMG_picture = itemView.findViewById(R.id.image_IMG_picture);
         }
     }
+
 }

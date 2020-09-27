@@ -3,6 +3,7 @@ package com.example.sugertime;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -88,6 +89,12 @@ public class SignUp_screen extends AppCompatActivity {
                     signUp_LAY_userName.setErrorEnabled(false);
 
                     addUser();
+
+                    if (signUp_LAY_role.getEditText().getText().toString().equals("Seller")){
+                        Intent intent = new Intent(getApplicationContext(), CreateShop_screen.class);
+                        intent.putExtra("username",signUp_LAY_userName.getEditText().getText().toString());
+                        startActivity(intent);
+                    }
 
                     finish();
                 }

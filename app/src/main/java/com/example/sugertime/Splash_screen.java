@@ -1,11 +1,19 @@
 package com.example.sugertime;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,6 +30,9 @@ public class Splash_screen extends AppCompatActivity {
     private Animation splash_top_animation;
     private Animation splash_bottom_Animation;
 
+    private LocationManager locationManager;
+
+    private final int REQUEST_LOCATION = 1;
     private final int SPLASH_SCREEN = 4000;
 
     @Override
@@ -36,6 +47,8 @@ public class Splash_screen extends AppCompatActivity {
 
         findView();
         initAnimation();
+
+        checkIfGPSOn();
 
         handlerSplashScreen();
     }
@@ -52,8 +65,47 @@ public class Splash_screen extends AppCompatActivity {
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(Splash_screen.this, pair);
                     startActivity(intent, options.toBundle());
                 }
+                finish();
             }
         }, SPLASH_SCREEN);
+    }
+
+    private void checkIfGPSOn() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            alertMessageNoGPS();
+        } else {
+            fetchLocation();
+        }
+    }
+
+    private void alertMessageNoGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Your GPS seems to be disable, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void fetchLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        }
     }
 
     private void initAnimation() {

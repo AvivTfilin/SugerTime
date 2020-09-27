@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class Seller_screen extends AppCompatActivity {
+public class ShopPage_screen extends AppCompatActivity {
 
     private TextView seller_LBL_description;
     private TextView seller_LBL_shopName;
@@ -55,7 +54,7 @@ public class Seller_screen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seller_screen);
+        setContentView(R.layout.activity_shop_page_screen);
 
         findView();
         initButton();
@@ -67,7 +66,7 @@ public class Seller_screen extends AppCompatActivity {
 
         Bundle data = getIntent().getExtras();
         shop = (Shop) data.getSerializable("shopInfo");
-        
+
         if(shop != null){
 
             showShopInfo();
@@ -188,7 +187,7 @@ public class Seller_screen extends AppCompatActivity {
         });
 
     }
-    
+
     private void showShopInfo() {
         seller_LBL_shopName.setText(shop.getShopName().toUpperCase());
         seller_LBL_description.setText(shop.getDescription());

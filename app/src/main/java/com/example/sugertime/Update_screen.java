@@ -7,37 +7,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.io.Serializable;
+import com.google.android.gms.location.FusedLocationProviderClient;
+
 import java.util.ArrayList;
 
 public class Update_screen extends AppCompatActivity {
@@ -55,15 +49,15 @@ public class Update_screen extends AppCompatActivity {
     private boolean isChoose = false;
 
     private String username;
-    private boolean isCreatePage;
 
     private Uri imageUri;
     private FirebaseStorage firebaseStorage;
     private StorageReference storageReference;
 
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
     private ArrayList<String> imageList;
     private Shop shop;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,19 +74,21 @@ public class Update_screen extends AppCompatActivity {
 
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
-        isCreatePage = intent.getBooleanExtra("createPage", false);
 
         findView();
+        initButton();
 
         Bundle data = getIntent().getExtras();
         shop = (Shop) data.getSerializable("shopInfo");
 
-        if (shop != null) {
-            isCreatePage = true;
+        if (shop == null) {
+            shop = new Shop();
+            findStoreInDB();
+
+            mDatabase.child("Users/").child(username + "/").child("createPage").setValue(true);
+        } else {
             showDetilesOnScreen();
         }
-
-        initButton();
     }
 
     private void initButton() {
@@ -116,7 +112,7 @@ public class Update_screen extends AppCompatActivity {
         update_BTN_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateInformation();
+                updateDB();
             }
         });
     }
@@ -189,14 +185,26 @@ public class Update_screen extends AppCompatActivity {
 
     }
 
-    private void updateInformation() {
 
-        if (!isCreatePage) {
-            saveInDB();
-        } else {
-            updateDB();
-        }
+    private void findStoreInDB() {
+        mDatabase.child("Confectioneries/").child(username + "/").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                shop.setOwner(snapshot.child("owner").getValue(String.class));
+                shop.setDescription(snapshot.child("description").getValue(String.class));
+                shop.setShopName(snapshot.child("shopName").getValue(String.class));
+                shop.setImageList(new ArrayList<String>());
+
+                showDetilesOnScreen();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
+
 
     private void updateDB() {
         if (!shop.getShopName().equals(update_LAY_storeName.getEditText().getText().toString())) {
@@ -226,20 +234,6 @@ public class Update_screen extends AppCompatActivity {
         update_LAY_description.getEditText().setText(shop.getDescription());
     }
 
-    private void saveInDB() {
-        checkInputValue();
-        checkIfStoreNameExistAndAddToDB();
-    }
-
-    private void addShopToDB() {
-        shop = new Shop(update_LAY_storeName.getEditText().getText().toString(), update_LAY_description.getEditText().getText().toString(), username, imageList);
-
-        mDatabase.child("Confectioneries/").child(shop.getOwner()).setValue(shop);
-        mDatabase.child("Users/").child(username + "/").child("createPage").setValue(true);
-
-        openNewActivity();
-    }
-
     private void openNewActivity() {
         Intent newIntent = new Intent(getApplicationContext(), Seller_screen.class);
         newIntent.putExtra("shopInfo", shop);
@@ -251,29 +245,6 @@ public class Update_screen extends AppCompatActivity {
         if (!checkInputValue.validateName(update_LAY_storeName) | !checkInputValue.validateName(update_LAY_description)) {
             return;
         }
-    }
-
-    private void checkIfStoreNameExistAndAddToDB() {
-        Query checkUser = mDatabase.orderByChild("shopName").equalTo(update_LAY_storeName.getEditText().getText().toString());
-
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    update_LAY_storeName.setError("A SHOP name already exists in the system");
-                } else {
-                    update_LAY_storeName.setError(null);
-                    update_LAY_storeName.setErrorEnabled(false);
-
-                    addShopToDB();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     private String getFileExtention(Uri uri) {
