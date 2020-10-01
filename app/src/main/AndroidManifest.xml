@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShopPage_screen"></activity>
+        <activity android:name=".Chats_list_screen"></activity>
+        <activity android:name=".Chat_screen" />
+        <activity android:name=".ShopPage_screen" />
         <activity android:name=".CreateShop_screen" />
         <activity android:name=".ReviewFragment" />
         <activity android:name=".Review_screen" />

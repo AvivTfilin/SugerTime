@@ -81,6 +81,7 @@ public class Review_screen extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                double rating =  snapshot.child("rating/").getValue(double.class);
+               int numOfStar = snapshot.child("numOfStar/").getValue(int.class);
                int numOfReview = snapshot.child("numOfReview/").getValue(int.class);
 
 
@@ -88,7 +89,7 @@ public class Review_screen extends AppCompatActivity {
                 ArrayList<String> reviewsArray = snapshot.child("reviews/").getValue(t);
 
 
-               updateDataInDB(rating, numOfReview, reviewsArray);
+               updateDataInDB(rating, numOfStar, numOfReview);
                returnToBuyerScreen();
             }
 
@@ -108,16 +109,20 @@ public class Review_screen extends AppCompatActivity {
 
     }
 
-    private void updateDataInDB(double rating, int nunOfReview, ArrayList<String> reviewsArray) {
+    private void updateDataInDB(double rating, int numOfStar ,int numOfReview) {
 
-        mDatabase.child("reviews/").child("" + nunOfReview).setValue(review_LBL_buyerReview.getText().toString());
+        if(!review_LBL_buyerReview.getText().toString().equals("")) {
+            mDatabase.child("reviews/").child("" + numOfReview).setValue(review_LBL_buyerReview.getText().toString());
 
-        Log.d("hello", "rating: " + rating + "num of review: " + nunOfReview);
+            numOfReview++;
 
-        nunOfReview++;
+            mDatabase.child("numOfReview/").setValue(numOfReview);
+        }
+
+        numOfStar++;
 
         mDatabase.child("rating/").setValue((rating + review_RTB_rating.getRating()));
-        mDatabase.child("numOfReview/").setValue(nunOfReview);
+        mDatabase.child("numOfStar/").setValue(numOfStar);
 
     }
 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#e6e6e6"
+    tools:context=".Chat_screen">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/chat_TBR_toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#8496F8"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/chat_IMG_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_LAY_chatList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="30"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#8496F8"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/chat_LBL_writeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:hint="@string/chat_text"
+            tools:ignore="NestedWeights" />
+
+        <ImageView
+            android:id="@+id/chat_IMG_send"
+            android:layout_width="25dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_fork"/>
+
+    </LinearLayout>
+
+</LinearLayout>

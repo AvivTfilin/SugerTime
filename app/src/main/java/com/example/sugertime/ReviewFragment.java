@@ -55,7 +55,7 @@ public class ReviewFragment extends Fragment {
         score = rootView.findViewById(R.id.reviewFragment_LBL_totalScore);
         reviewFragment_LBL_text = rootView.findViewById(R.id.reviewFragment_LBL_text);
 
-        score.setText("This Shop have in total: " + new DecimalFormat("##.##").format(review.getRating()/review.getNumOfReview()) + " stars");
+        score.setText("This Shop have in total: " + new DecimalFormat("##.##").format(review.getRating()/review.getNumOfStar()) + " stars");
 
         if(review.getNumOfReview() != 0){
             reviewFragment_LBL_text.setVisibility(View.GONE);

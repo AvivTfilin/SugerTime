@@ -114,11 +114,12 @@ public class Login_screen extends AppCompatActivity {
                 intent = new Intent(getApplicationContext(), Update_screen.class);
             }
 
-            intent.putExtra("username", username);
         }
         else {
             intent = new Intent(getApplicationContext(), Buyer_screen.class);
         }
+
+        intent.putExtra("username", username);
 
         startActivity(intent);
         finish();

@@ -7,6 +7,7 @@ public class Review implements Serializable {
 
     private String shopName = "";
     private int numOfReview = 0;
+    private int numOfStar = 0;
     private double rating;
     private ArrayList<String> reviews;
 
@@ -14,11 +15,12 @@ public class Review implements Serializable {
 
     }
 
-    public Review(String shopName, int numOfReview, double rating, ArrayList<String> reviews) {
+    public Review(String shopName, int numOfReview, int numOfStar, double rating, ArrayList<String> reviews) {
         this.shopName = shopName;
         this.numOfReview = numOfReview;
         this.rating = rating;
         this.reviews = reviews;
+        this.numOfStar = numOfStar;
     }
 
     public String getShopName() {
@@ -51,5 +53,13 @@ public class Review implements Serializable {
 
     public void setReviews(ArrayList<String> reviews) {
         this.reviews = reviews;
+    }
+
+    public int getNumOfStar() {
+        return numOfStar;
+    }
+
+    public void setNumOfStar(int numOfStar) {
+        this.numOfStar = numOfStar;
     }
 }

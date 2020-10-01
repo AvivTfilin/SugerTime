@@ -47,4 +47,12 @@
 
     <string name="createShop_title">Create Shop:</string>
     <string name="createShop_addres">Store address:</string>
+
+    <string name="chat_text">Type a message...</string>
+    <string name="chats_titel">Chats:</string>
+
+    <string name="header_titel">SugerTime</string>
+
+    <string name="menu_open">Open</string>
+    <string name="menu_close">Close</string>
 </resources>

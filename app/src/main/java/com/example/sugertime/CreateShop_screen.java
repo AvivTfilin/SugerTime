@@ -141,7 +141,7 @@ public class CreateShop_screen extends AppCompatActivity {
 
         ArrayList<String> listReview = new ArrayList<>();
 
-        Review review = new Review(shopName, 0, 0, listReview);
+        Review review = new Review(shopName, 0,0, 0, listReview);
 
         mDatabase.child("Reviews/").child(review.getShopName()).setValue(review);
 
