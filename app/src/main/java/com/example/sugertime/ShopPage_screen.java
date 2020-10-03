@@ -61,10 +61,13 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
 
     private boolean isBuyer;
 
+    private String saveUser;
+
 
     private DrawerLayout shop_LAY_drawerLayout;
     private NavigationView shop_LAY_view;
     private Toolbar shop_TLB_menu;
+
 
 
     @Override
@@ -73,6 +76,9 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
         setContentView(R.layout.activity_shop_page_screen);
 
         user = getIntent().getStringExtra("user");
+
+        Log.d("hello", "what what");
+        Log.d("hello", "the user is: " + user);
 
         findView();
         initButton();
@@ -98,6 +104,8 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
         shop = (Shop) data.getSerializable("shopInfo");
 
         if (shop != null) {
+
+            Log.d("hello","we enter this shop, the shop name is: " + shop.getShopName() + "and the owner is: " + shop.getOwner());
 
             showShopInfo();
             showReview(shop.getShopName());
@@ -169,7 +177,7 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), Chat_screen.class);
-                Log.d("hello", user);
+                Log.d("hello", "before we pass activity the user is: " + user + "and the shop owner is: " + shop.getOwner());
                 intent.putExtra("sender", user);
                 intent.putExtra("sendTo", shop.getOwner());
 
@@ -198,6 +206,7 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), Review_screen.class);
                 intent.putExtra("shop", shop);
+                intent.putExtra("user" , user);
                 startActivity(intent);
                 finish();
             }
@@ -257,8 +266,12 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
         seller_RCV_pictureList.setLayoutManager(linearLayoutManager);
         seller_RCV_pictureList.setItemAnimator(new DefaultItemAnimator());
 
-        recyclePictureAdapter = new RecyclePictureAdapter(getApplicationContext(), shop.getImageList());
-        seller_RCV_pictureList.setAdapter(recyclePictureAdapter);
+        if(shop.getImageList() != null) {
+
+            recyclePictureAdapter = new RecyclePictureAdapter(getApplicationContext(), shop.getImageList());
+            seller_RCV_pictureList.setAdapter(recyclePictureAdapter);
+        }
+
     }
 
     private void findView() {

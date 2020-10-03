@@ -15,7 +15,7 @@
         android:id="@+id/shop_LAY_view"
         android:layout_gravity="start"
         app:headerLayout="@layout/haeder"
-        app:menu="@menu/main_manu" />
+        app:menu="@menu/main_buyer" />
 
     <LinearLayout
         android:layout_width="match_parent"

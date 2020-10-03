@@ -48,6 +48,9 @@ public class Chat_screen extends AppCompatActivity {
         username = getIntent().getStringExtra("sender");
         sendTo = getIntent().getStringExtra("sendTo");
 
+        Log.d("hello", "the sender / user is: " + username);
+        Log.d("hello", "we send to: " + sendTo);
+
         findView();
         initImage();
         initRecyclerView();
@@ -151,6 +154,25 @@ public class Chat_screen extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()) {
                     reference.child("id").setValue(receiver);
+
+                    reference = FirebaseDatabase.getInstance().getReference("ChatList/").child(receiver).child(sender);
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(!snapshot.exists()) {
+                                reference.child("id").setValue(sender);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+
                 }
             }
 
@@ -160,21 +182,7 @@ public class Chat_screen extends AppCompatActivity {
             }
         });
 
-        reference = FirebaseDatabase.getInstance().getReference("ChatList/").child(receiver).child(sender);
 
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()) {
-                    reference.child("id").setValue(sender);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
 

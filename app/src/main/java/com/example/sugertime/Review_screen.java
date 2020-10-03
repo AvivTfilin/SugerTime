@@ -31,7 +31,8 @@ public class Review_screen extends AppCompatActivity {
     private ImageView review_IMG_back;
     private DatabaseReference mDatabase;
     private Shop shop;
-
+    private Intent intent;
+    private String user;
     private Review review;
 
     @Override
@@ -43,9 +44,10 @@ public class Review_screen extends AppCompatActivity {
 
 
 
-        Intent intent = getIntent();
+        intent = getIntent();
         Bundle data = getIntent().getExtras();
         shop = (Shop) data.getSerializable("shop");
+        user = intent.getStringExtra("user");
 
         findView();
         initButton();
@@ -101,9 +103,11 @@ public class Review_screen extends AppCompatActivity {
     }
 
     private void returnToBuyerScreen() {
+
         Intent intent = new Intent(getApplicationContext(), ShopPage_screen.class);
         intent.putExtra("shopInfo", shop);
         intent.putExtra("isBuyer",true);
+        intent.putExtra("user", user);
         startActivity(intent);
         finish();
 

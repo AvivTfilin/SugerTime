@@ -72,6 +72,7 @@ public class ReviewFragment extends Fragment {
             reviewFragment_LBL_text.setVisibility(View.VISIBLE);
         }
 
+
         return rootView;
     }
 

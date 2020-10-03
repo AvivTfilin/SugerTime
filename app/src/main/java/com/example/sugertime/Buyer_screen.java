@@ -71,12 +71,11 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
 
         buyer_LAY_view.bringToFront();
 
-        ActionBarDrawerToggle toggle=new
-                ActionBarDrawerToggle(this,buyer_LAY_drawerLayout,buyer_TLB_menu,R.string.menu_open, R.string.menu_close);
+        ActionBarDrawerToggle toggle = new
+                ActionBarDrawerToggle(this, buyer_LAY_drawerLayout, buyer_TLB_menu, R.string.menu_open, R.string.menu_close);
         buyer_LAY_drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         buyer_LAY_view.setNavigationItemSelectedListener(this);
-
 
 
         findBuyerLocation();
@@ -93,7 +92,7 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
             task.addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    if(location != null) {
+                    if (location != null) {
                         currentLocation = location;
 
                         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -119,24 +118,24 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()){
-                   String shopName = ds.child("shopName").getValue(String.class);
-                   double lat = ds.child("lat").getValue(double.class);
-                   double lon = ds.child("lon").getValue(double.class);
-                   String owner = ds.child("owner").getValue(String.class);
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String shopName = ds.child("shopName").getValue(String.class);
+                    double lat = ds.child("lat").getValue(double.class);
+                    double lon = ds.child("lon").getValue(double.class);
+                    String owner = ds.child("owner").getValue(String.class);
 
-                   shopOwner.put(shopName, owner);
+                    shopOwner.put(shopName, owner);
 
-                   mMap.addMarker(new MarkerOptions().position(new LatLng(lat,lon)).title(shopName)).showInfoWindow();
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title(shopName)).showInfoWindow();
 
-                   clickMarker(mMap);
+                    clickMarker(mMap);
 
-                   mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                       @Override
-                       public void onMapClick(LatLng latLng) {
+                    mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(LatLng latLng) {
 
-                       }
-                   });
+                        }
+                    });
                 }
             }
 
@@ -170,7 +169,8 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
                         shop.setDescription(snapshot.child("description").getValue(String.class));
                         shop.setOwner(snapshot.child("owner").getValue(String.class));
 
-                        GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                        GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
+                        };
                         shop.setImageList(snapshot.child("imageList").getValue(t));
 
                         Intent intent = new Intent(getApplicationContext(), ShopPage_screen.class);
@@ -198,11 +198,20 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.main_NAV_logOut){
-            Intent intent = new Intent(getApplicationContext(), Login_screen.class);
-            startActivity(intent);
-            finish();
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.main_NAV_logOut:
+                intent = new Intent(getApplicationContext(), Login_screen.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.main_NAV_chatList:
+                intent = new Intent(getApplicationContext(), Chats_list_screen.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+                break;
         }
+
 
         return true;
     }
