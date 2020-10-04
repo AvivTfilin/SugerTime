@@ -7,7 +7,8 @@
     tools:context=".ShopPage_screen"
     android:id="@+id/shop_LAY_drawerLayout"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    >
 
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
@@ -15,7 +16,7 @@
         android:id="@+id/shop_LAY_view"
         android:layout_gravity="start"
         app:headerLayout="@layout/haeder"
-        app:menu="@menu/main_buyer" />
+        app:menu="@menu/main_seller" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,13 +25,15 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="#0667B5">
 
             <androidx.appcompat.widget.Toolbar
                 android:padding="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/shop_TLB_menu"
+                android:background = "#0667B5"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 app:navigationIcon="@drawable/ic_menu" />
@@ -93,37 +96,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp" />
-
-        <LinearLayout
-            android:id="@+id/seller_LAY_buttons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/seller_BTN_update"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="@string/seller_button_update"
-                tools:ignore="NestedWeights" />
-
-            <Button
-                android:id="@+id/shop_BTN_chatList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="@string/seller_button_chat" />
-        </LinearLayout>
 
         <Button
             android:id="@+id/seller_BTN_review"

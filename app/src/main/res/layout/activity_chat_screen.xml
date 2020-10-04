@@ -5,46 +5,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#e6e6e6"
+    android:background="@drawable/cake"
     tools:context=".Chat_screen">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chat_TBR_toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#8496F8"
-        android:layout_weight="1">
+        android:background="#0667B5">
 
-        <ImageView
-            android:id="@+id/chat_IMG_back"
-            android:layout_width="25dp"
-            android:layout_height="25dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/chat_LBL_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/cookie"
+                android:textColor="#000000"
+                android:padding="10dp"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:id="@+id/chat_IMG_back"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_width="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_height="25dp" />
+        </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_LAY_chatList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="30"/>
+        android:layout_margin="10dp"
+        android:layout_weight="6"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#8496F8"
-        android:layout_weight="1">
+        android:orientation="horizontal">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/chat_LBL_writeText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="20"
             android:hint="@string/chat_text"
-            tools:ignore="NestedWeights" />
+            app:boxBackgroundColor="#0000"
+            app:boxCornerRadiusTopStart="30dp"
+            app:boxCornerRadiusBottomEnd="30dp"
+            tools:ignore="NestedWeights">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <ImageView
             android:id="@+id/chat_IMG_send"
-            android:layout_width="25dp"
+            android:layout_width="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_fork"/>

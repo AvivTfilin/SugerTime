@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Log-Out">
-        <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/main_NAV_logOut"
-                    android:title="Log-Out"
-                    android:icon="@drawable/ic_exit"/>
-            </group>
-        </menu>
-    </item>
+<item android:title="Chat List">
+    <menu>
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/main_NAV_chatList"
+                android:title="Chat List"
+                android:icon="@drawable/ic_chat"
+                />
+        </group>
+    </menu>
+</item>
+
+<item android:title="Log-Out">
+    <menu>
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/main_NAV_logOut"
+                android:title="Log-Out"
+                android:icon="@drawable/ic_exit"/>
+        </group>
+    </menu>
+</item>
 </menu>

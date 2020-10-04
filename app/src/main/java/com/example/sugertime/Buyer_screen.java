@@ -169,8 +169,7 @@ public class Buyer_screen extends FragmentActivity implements OnMapReadyCallback
                         shop.setDescription(snapshot.child("description").getValue(String.class));
                         shop.setOwner(snapshot.child("owner").getValue(String.class));
 
-                        GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
-                        };
+                        GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                         shop.setImageList(snapshot.child("imageList").getValue(t));
 
                         Intent intent = new Intent(getApplicationContext(), ShopPage_screen.class);

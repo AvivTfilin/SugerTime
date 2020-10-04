@@ -16,7 +16,7 @@
         android:id="@+id/buyer_LAY_view"
         app:headerLayout="@layout/haeder"
         android:layout_gravity="start"
-        app:menu="@menu/main_seller" />
+        app:menu="@menu/main_buyer" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/buyer_TLB_menu"
+            android:background = "#0667B5"
             app:navigationIcon="@drawable/ic_menu" />
 
         <fragment

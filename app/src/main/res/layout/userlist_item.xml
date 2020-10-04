@@ -2,29 +2,44 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="3dp"
     android:background="@drawable/background_userlist"
-    android:padding="15dp"
-    android:id="@+id/userList_LAY_userList"
-    >
+    android:padding="11dp"
+    android:id="@+id/userList_LAY_userList">
+
+    <ImageView
+        android:id="@+id/userList_IMG_user"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        app:srcCompat = "@drawable/user"
+        android:layout_centerVertical="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/userList_IMG_user"
+        android:layout_toEndOf="@id/userList_IMG_user"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/userList_LBL_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/cookie"
+            android:textSize="20sp"
+            android:text="SHEMO"
             android:textColor="#000000" />
 
         <TextView
             android:id="@+id/userList_LBL_lastMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
+            android:text="hello"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:maxLines="1"/>
 
     </LinearLayout>

@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,10 +37,14 @@ public class Chat_screen extends AppCompatActivity {
 
     private ImageView chat_IMG_back;
     private ImageView chat_IMG_send;
-    private EditText chat_LBL_writeText;
 
     private String username;
     private String sendTo;
+
+
+    private TextInputLayout chat_LBL_writeText;
+    private TextView chat_LBL_name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +54,13 @@ public class Chat_screen extends AppCompatActivity {
         username = getIntent().getStringExtra("sender");
         sendTo = getIntent().getStringExtra("sendTo");
 
-        Log.d("hello", "the sender / user is: " + username);
-        Log.d("hello", "we send to: " + sendTo);
-
         findView();
         initImage();
         initRecyclerView();
         initButton();
 
+
+        chat_LBL_name.setText(sendTo);
         readMessageFromDB(username, sendTo);
 
 
@@ -72,7 +77,7 @@ public class Chat_screen extends AppCompatActivity {
         chat_IMG_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String text = chat_LBL_writeText.getText().toString();
+                String text = chat_LBL_writeText.getEditText().getText().toString();
 
                 if (!text.equals("")) {
                     sendMessage(username, sendTo, text);
@@ -81,7 +86,7 @@ public class Chat_screen extends AppCompatActivity {
 
                 }
 
-                chat_LBL_writeText.setText("");
+                chat_LBL_writeText.getEditText().setText("");
             }
         });
     }
@@ -103,6 +108,7 @@ public class Chat_screen extends AppCompatActivity {
         chat_IMG_back = findViewById(R.id.chat_IMG_back);
         chat_IMG_send = findViewById(R.id.chat_IMG_send);
         chat_LBL_writeText = findViewById(R.id.chat_LBL_writeText);
+        chat_LBL_name = findViewById(R.id.chat_LBL_name);
 
     }
 
@@ -170,9 +176,6 @@ public class Chat_screen extends AppCompatActivity {
 
                         }
                     });
-
-
-
                 }
             }
 

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.sugertime.UserListAdapter.ViewHolder;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +28,9 @@ public class Chats_list_screen extends AppCompatActivity {
     private String username;
     private List<Chat_list> usersChatList;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,7 @@ public class Chats_list_screen extends AppCompatActivity {
         initRecycleView();
 
         usersChatList = new ArrayList<>();
+
 
         username = getIntent().getStringExtra("user");
 
@@ -51,6 +56,8 @@ public class Chats_list_screen extends AppCompatActivity {
 
                 userListAdapter = new UserListAdapter(getApplicationContext(), usersChatList, username);
                 chats_LAY_chatList.setAdapter(userListAdapter);
+
+
             }
 
             @Override
@@ -59,6 +66,8 @@ public class Chats_list_screen extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void initRecycleView() {
         chats_LAY_chatList.setHasFixedSize(true);

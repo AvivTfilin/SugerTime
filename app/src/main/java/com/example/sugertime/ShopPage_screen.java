@@ -42,8 +42,6 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
 
     private ReviewFragment reviewFragment;
 
-    private Button seller_BTN_update;
-    private Button shop_BTN_chatList;
 
     private FloatingActionButton seller_BTN_chatWithSeller;
 
@@ -53,7 +51,6 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
     private Review review;
 
     private Button seller_BTN_review;
-    private LinearLayout seller_LAY_buttons;
 
     private Shop shop;
     private String owner;
@@ -114,18 +111,15 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
                 shop_TLB_menu.setVisibility(View.GONE);
                 seller_BTN_review.setVisibility(View.VISIBLE);
                 seller_BTN_chatWithSeller.setVisibility(View.VISIBLE);
-                seller_LAY_buttons.setVisibility(View.GONE);
             } else {
                 seller_BTN_chatWithSeller.setVisibility(View.GONE);
                 seller_BTN_review.setVisibility(View.GONE);
-                seller_LAY_buttons.setVisibility(View.VISIBLE);
             }
 
         } else {
             shop = new Shop();
             seller_BTN_chatWithSeller.setVisibility(View.GONE);
             seller_BTN_review.setVisibility(View.GONE);
-            seller_LAY_buttons.setVisibility(View.VISIBLE);
 
             readShopFromDB();
         }
@@ -179,27 +173,13 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
                 Intent intent = new Intent(getApplicationContext(), Chat_screen.class);
                 Log.d("hello", "before we pass activity the user is: " + user + "and the shop owner is: " + shop.getOwner());
                 intent.putExtra("sender", user);
-                intent.putExtra("sendTo", shop.getOwner());
+                intent.putExtra("sendTo", shop.getShopName());
 
                 startActivity(intent);
             }
         });
 
-        seller_BTN_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updatePage();
-            }
-        });
 
-        shop_BTN_chatList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Chats_list_screen.class);
-                intent.putExtra("user", shop.getOwner());
-                startActivity(intent);
-            }
-        });
 
         seller_BTN_review.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,11 +258,9 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
         seller_LBL_shopName = findViewById(R.id.seller_LBL_shopName);
         seller_LBL_description = findViewById(R.id.seller_LBL_description);
         seller_RCV_pictureList = findViewById(R.id.seller_RCV_pictureList);
-        seller_BTN_update = findViewById(R.id.seller_BTN_update);
         seller_BTN_review = findViewById(R.id.seller_BTN_review);
-        seller_LAY_buttons = findViewById(R.id.seller_LAY_buttons);
         seller_BTN_chatWithSeller = findViewById(R.id.seller_BTN_chatWithSeller);
-        shop_BTN_chatList = findViewById(R.id.shop_BTN_chatList);
+
 
 
         shop_LAY_drawerLayout = findViewById(R.id.shop_LAY_drawerLayout);
@@ -293,12 +271,28 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
 
-        if(item.getItemId() == R.id.main_NAV_logOut){
-            Intent intent = new Intent(getApplicationContext(), Login_screen.class);
-            startActivity(intent);
-            finish();
+        switch (item.getItemId()) {
+            case R.id.main_NAV_logOut:
+                intent = new Intent(getApplicationContext(), Login_screen.class);
+                startActivity(intent);
+                finish();
+                break;
+
+            case R.id.main_NAV_chatList:
+                intent = new Intent(getApplicationContext(), Chats_list_screen.class);
+                intent.putExtra("user", shop.getShopName());
+                startActivity(intent);
+                break;
+
+            case R.id.main_NAV_update:
+                updatePage();
+                break;
+
         }
+
+
 
         return true;
     }
