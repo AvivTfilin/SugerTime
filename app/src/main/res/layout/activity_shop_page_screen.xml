@@ -2,20 +2,20 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_LAY_drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShopPage_screen"
-    android:id="@+id/shop_LAY_drawerLayout"
+    android:background="@drawable/shop"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    >
+    tools:context=".ShopPage_screen"
+    tools:openDrawer="start">
 
     <com.google.android.material.navigation.NavigationView
+        android:id="@+id/shop_LAY_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/shop_LAY_view"
         android:layout_gravity="start"
-        app:headerLayout="@layout/haeder"
+        app:headerLayout="@layout/header"
         app:menu="@menu/main_seller" />
 
     <LinearLayout
@@ -29,24 +29,30 @@
             android:background="#0667B5">
 
             <androidx.appcompat.widget.Toolbar
-                android:padding="5dp"
+                android:id="@+id/shop_TLB_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/shop_TLB_menu"
-                android:background = "#0667B5"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="-1dp"
+                android:layout_marginRight="-1dp"
+                android:background="#0667B5"
+                android:padding="5dp"
                 app:navigationIcon="@drawable/ic_menu" />
 
             <TextView
                 android:id="@+id/seller_LBL_shopName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:fontFamily="@font/cookie"
-                android:gravity="center"
                 android:padding="10dp"
-                android:textColor="#0D1E78"
-                android:textSize="45sp" />
+                android:textColor="#06114A"
+                android:textSize="45sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/seller_BTN_chatWithSeller"
@@ -55,10 +61,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_margin="16dp"
-                android:backgroundTint="#0D1E78"
                 app:srcCompat="@drawable/ic_chat" />
-
-
         </RelativeLayout>
 
 
@@ -76,8 +79,8 @@
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/cookie"
             android:text="@string/seller_text_description"
-            android:textColor="#000000"
-            android:textSize="30sp" />
+            android:textColor="#0D1E78"
+            android:textSize="35sp" />
 
         <TextView
             android:id="@+id/seller_LBL_description"
@@ -85,9 +88,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="20dp"
-            android:maxLines="4"
+            android:layout_marginBottom="35dp"
+            android:lines="6"
+            android:maxLines="6"
             android:textColor="#000000"
             android:textSize="15sp" />
 
@@ -95,7 +100,7 @@
             android:id="@+id/seller_RCV_pictureList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="30dp" />
 
         <Button
             android:id="@+id/seller_BTN_review"
@@ -109,9 +114,9 @@
             android:id="@+id/seller_LAY_reviewList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp" />
 
     </LinearLayout>
 

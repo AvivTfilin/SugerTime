@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,8 @@ public class CreateShop_screen extends AppCompatActivity {
     private CheckInputValue checkInputValue;
     private DatabaseReference mDatabase;
 
+    private ImageView create_IMG_image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,8 @@ public class CreateShop_screen extends AppCompatActivity {
 
         findView();
         initButton();
+
+        create_IMG_image.setImageResource(R.drawable.ic_build);
 
 
     }
@@ -157,5 +162,6 @@ public class CreateShop_screen extends AppCompatActivity {
         create_LAY_storeName = findViewById(R.id.create_LAY_storeName);
         create_LAY_address = findViewById(R.id.create_LAY_address);
         create_BTN_submit = findViewById(R.id.create_BTN_submit);
+        create_IMG_image = findViewById(R.id.create_IMG_image);
     }
 }

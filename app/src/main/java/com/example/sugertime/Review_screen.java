@@ -29,6 +29,7 @@ public class Review_screen extends AppCompatActivity {
     private EditText review_LBL_buyerReview;
     private Button review_BTN_submit;
     private ImageView review_IMG_back;
+    private ImageView review_IMG_image;
     private DatabaseReference mDatabase;
     private Shop shop;
     private Intent intent;
@@ -51,6 +52,8 @@ public class Review_screen extends AppCompatActivity {
 
         findView();
         initButton();
+
+        review_IMG_image.setImageResource(R.drawable.ic_bakery);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Reviews/").child(shop.getShopName() + "/");
 
@@ -136,6 +139,7 @@ public class Review_screen extends AppCompatActivity {
         review_LBL_buyerReview = findViewById(R.id.review_LBL_buyerReview);
         review_BTN_submit = findViewById(R.id.review_BTN_submit);
         review_IMG_back = findViewById(R.id.review_IMG_back);
+        review_IMG_image = findViewById(R.id.review_IMG_image);
 
     }
 }

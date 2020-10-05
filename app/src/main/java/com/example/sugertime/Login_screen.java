@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +28,9 @@ public class Login_screen extends AppCompatActivity {
 
     private CheckInputValue checkInputValue;
 
+    private ImageView login_IMG_loginImage;
+    private ImageView login_IMG_singUpImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,9 @@ public class Login_screen extends AppCompatActivity {
 
         findView();
         initButton();
+
+        login_IMG_loginImage.setImageResource(R.drawable.ic_signin);
+        login_IMG_singUpImage.setImageResource(R.drawable.ic_addpeople);
     }
 
     private void initButton() {
@@ -130,5 +137,7 @@ public class Login_screen extends AppCompatActivity {
         login_BTN_logIn = findViewById(R.id.login_BTN_logIn);
         logIn_LAY_username = findViewById(R.id.logIn_LAY_username);
         logIn_LAY_password = findViewById(R.id.logIn_LAY_password);
+        login_IMG_loginImage = findViewById(R.id.login_IMG_loginImage);
+        login_IMG_singUpImage = findViewById(R.id.login_IMG_singUpImage);
     }
 }
