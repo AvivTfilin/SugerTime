@@ -5,19 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 public class SignUp_screen extends AppCompatActivity {
 
@@ -32,7 +32,9 @@ public class SignUp_screen extends AppCompatActivity {
 
     private CheckInputValue checkInputValue;
     private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
 
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class SignUp_screen extends AppCompatActivity {
 
         checkInputValue = new CheckInputValue();
         mDatabase = FirebaseDatabase.getInstance().getReference("Users/");
+        mAuth = FirebaseAuth.getInstance();
 
         setDropDown();
         findView();
@@ -56,7 +59,6 @@ public class SignUp_screen extends AppCompatActivity {
             }
         });
 
-
         signUp_BTN_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,54 +67,76 @@ public class SignUp_screen extends AppCompatActivity {
         });
     }
 
+    // Checks if the data entered by user is logically correct
     private void checkValueAndStore() {
-        if(!checkInputValue.validateName(signUp_LAY_fullName) | !checkInputValue.validateUserName(signUp_LAY_userName) |
+        if (!checkInputValue.validateName(signUp_LAY_fullName) | !checkInputValue.validateUserName(signUp_LAY_userName) |
                 !checkInputValue.validateEmail(signUp_LAY_email) | !checkInputValue.validateRole(signUp_LAY_role) |
-                !checkInputValue.validatePassword(signUp_LAY_password)){
+                !checkInputValue.validatePassword(signUp_LAY_password)) {
             return;
         }
 
-        checkIfUsernameExist();
+        createUser();
+
+        String email = signUp_LAY_email.getEditText().getText().toString().trim();
+        String password = signUp_LAY_password.getEditText().getText().toString().trim();
+
+        saveUserInDB(email, password);
     }
 
-    private void checkIfUsernameExist() {
+    private void saveUserInDB(final String email, final String password) {
 
-        Query checkUser = mDatabase.orderByChild("userName").equalTo(signUp_LAY_userName.getEditText().getText().toString());
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    signUp_LAY_userName.setError("A USERNAME already exists in the system");
-                } else {
-                    signUp_LAY_userName.setError(null);
-                    signUp_LAY_userName.setErrorEnabled(false);
-
-                    addUser();
-
-                    if (signUp_LAY_role.getEditText().getText().toString().equals("Seller")){
-                        Intent intent = new Intent(getApplicationContext(), CreateShop_screen.class);
-                        intent.putExtra("username",signUp_LAY_userName.getEditText().getText().toString());
-                        startActivity(intent);
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        // When the data entered by the user is correct
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            // Save user in DB
+                            addNewUser(user);
+                            newActivity();
+                        } else {
+                            if (task.getException().getMessage().contains("email")) {
+                                signUp_LAY_email.setError(task.getException().getMessage());
+                            }
+                        }
                     }
-
-                    finish();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                });
     }
 
-    private void addUser() {
-        User user = new User(signUp_LAY_fullName.getEditText().getText().toString(), signUp_LAY_userName.getEditText().getText().toString(),
-                signUp_LAY_email.getEditText().getText().toString(), signUp_LAY_role.getEditText().getText().toString(),
-                signUp_LAY_password.getEditText().getText().toString(),false);
+    private void newActivity() {
+        Intent intent;
+        // If user select his role seller , we go to create shop activity
+        if (user.getRole().equals("Seller")) {
+            intent = new Intent(getApplicationContext(), CreateShop_screen.class);
+        } else {
+            intent = new Intent(getApplicationContext(), Buyer_screen.class);
+        }
 
-        mDatabase.child(user.getUserName()).setValue(user);
+        startActivity(intent);
+        finish();
+    }
+
+    // Save user In DB
+    private void addNewUser(FirebaseUser firebaseUser) {
+        String keyId = mAuth.getCurrentUser().getUid();
+        mDatabase.child(keyId).setValue(user);
+    }
+
+    private void createUser() {
+        user = new User(signUp_LAY_fullName.getEditText().getText().toString(), signUp_LAY_userName.getEditText().getText().toString(),
+                signUp_LAY_email.getEditText().getText().toString(), signUp_LAY_role.getEditText().getText().toString(),
+                signUp_LAY_password.getEditText().getText().toString(), "");
+    }
+
+    // Create option to drop down
+    private void setDropDown() {
+        String[] ROLES = new String[]{"Seller", "Buyer"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, ROLES);
+        AutoCompleteTextView editTextFillExposedDropdown = (AutoCompleteTextView) findViewById(R.id.signUp_LBL_role);
+        editTextFillExposedDropdown.setAdapter(adapter);
     }
 
     private void findView() {
@@ -124,13 +148,5 @@ public class SignUp_screen extends AppCompatActivity {
 
         signUp_BTN_submit = findViewById(R.id.signUp_BTN_submit);
         signUp_BTN_back = findViewById(R.id.signUp_BTN_back);
-    }
-
-    private void setDropDown() {
-        String[] ROLES = new String[]{"Seller","Buyer"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item,ROLES);
-        AutoCompleteTextView editTextFillExposedDropdown = (AutoCompleteTextView) findViewById(R.id.signUp_LBL_role);
-        editTextFillExposedDropdown.setAdapter(adapter);
     }
 }

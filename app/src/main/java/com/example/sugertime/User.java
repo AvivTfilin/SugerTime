@@ -8,31 +8,23 @@ public class User {
     private String email = "";
     private String role = "";
     private String password = "";
-    private boolean createPage = false;
+    private String shopName = "";
 
-    public User(){
+    public User() {
     }
 
-    public User(String fullName, String userName, String email, String role, String password, boolean createPage) {
+    public User(String fullName, String userName, String email, String role, String password, String shopName) {
         this.fullName = fullName;
         this.userName = userName;
         this.email = email;
         this.role = role;
         this.password = password;
-        this.createPage = createPage;
+        this.shopName = shopName;
     }
 
 
     public String getFullName() {
         return fullName;
-    }
-
-    public boolean isCreatePage() {
-        return createPage;
-    }
-
-    public void setCreatePage(boolean createPage) {
-        this.createPage = createPage;
     }
 
     public void setFullName(String fullName) {
@@ -69,5 +61,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 }

@@ -48,6 +48,8 @@ public class Splash_screen extends AppCompatActivity {
         findView();
         initAnimation();
 
+        splash_IMG_imageDisplay.setImageResource(R.drawable.ic_doughnut);
+
         checkIfGPSOn();
 
         handlerSplashScreen();
@@ -63,8 +65,9 @@ public class Splash_screen extends AppCompatActivity {
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(Splash_screen.this, pair);
-                    startActivity(intent, options.toBundle());
+                    startActivity(intent);
                 }
+
                 finish();
             }
         }, SPLASH_SCREEN);
@@ -73,6 +76,7 @@ public class Splash_screen extends AppCompatActivity {
     private void checkIfGPSOn() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        // Check if user GPS is OFF
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             alertMessageNoGPS();
         } else {
@@ -80,6 +84,7 @@ public class Splash_screen extends AppCompatActivity {
         }
     }
 
+    // Show alert message if user GPS is OFF
     private void alertMessageNoGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -101,6 +106,7 @@ public class Splash_screen extends AppCompatActivity {
         alert.show();
     }
 
+    // Has the user given permissions
     private void fetchLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

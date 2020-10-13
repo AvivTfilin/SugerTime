@@ -19,17 +19,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.util.ArrayList;
 
@@ -44,19 +40,16 @@ public class Update_screen extends AppCompatActivity {
 
     private CheckInputValue checkInputValue;
     private DatabaseReference mDatabase;
-
-    private boolean isChoose = false;
-
-    private String username;
-
-    private Uri imageUri;
     private FirebaseStorage firebaseStorage;
     private StorageReference storageReference;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Uri imageUri;
 
     private ArrayList<String> imageList;
+    private String username;
     private Shop shop;
+
+    private boolean isChoose = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,33 +58,27 @@ public class Update_screen extends AppCompatActivity {
 
         checkInputValue = new CheckInputValue();
         imageList = new ArrayList<>();
+        shop = new Shop();
 
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        Intent intent = getIntent();
-        username = intent.getStringExtra("username");
+        username = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         findView();
         initButton();
+        getShopInfo();
+        showDetailsOnScreen();
+    }
 
+    // Get shop object from previous activity
+    private void getShopInfo() {
         Bundle data = getIntent().getExtras();
         shop = (Shop) data.getSerializable("shopInfo");
-
-        if (shop == null) {
-            shop = new Shop();
-            findStoreInDB();
-
-            mDatabase.child("Users/").child(username + "/").child("createPage").setValue(true);
-        } else {
-            showDetilesOnScreen();
-        }
     }
 
     private void initButton() {
-
         update_BTN_chooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,11 +103,11 @@ public class Update_screen extends AppCompatActivity {
         });
     }
 
+    // Upload user image to DB
     private void storeImage() {
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setTitle("Uploading image");
         pd.show();
-
 
         StorageReference riversRef = storageReference.child("images/" + System.currentTimeMillis() + "." + getFileExtention(imageUri));
 
@@ -132,6 +119,7 @@ public class Update_screen extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Image Uploaded", Toast.LENGTH_LONG).show();
 
                         Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                        // Save image url in array list
                         task.addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
@@ -150,12 +138,14 @@ public class Update_screen extends AppCompatActivity {
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        // Loading when picture is upload in DB
                         double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                         pd.setMessage("Progress: " + (int) progressPercent + "%");
                     }
                 });
     }
 
+    // Open new activity for select image
     private void chooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -166,7 +156,7 @@ public class Update_screen extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        // Permission to open and select image from user phone
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             update_IMG_picture.setImageURI(imageUri);
@@ -174,49 +164,19 @@ public class Update_screen extends AppCompatActivity {
         }
     }
 
-    private void findView() {
-        update_LAY_description = findViewById(R.id.update_LAY_description);
-        update_LAY_storeName = findViewById(R.id.update_LAY_storeName);
-        update_BTN_chooseImage = findViewById(R.id.update_BTN_chooseImage);
-        update_BTN_upload = findViewById(R.id.update_BTN_upload);
-        update_BTN_finish = findViewById(R.id.update_BTN_finish);
-        update_IMG_picture = findViewById(R.id.update_IMG_picture);
-
-    }
-
-
-    private void findStoreInDB() {
-        mDatabase.child("Confectioneries/").child(username + "/").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                shop.setOwner(snapshot.child("owner").getValue(String.class));
-                shop.setDescription(snapshot.child("description").getValue(String.class));
-                shop.setShopName(snapshot.child("shopName").getValue(String.class));
-                shop.setImageList(new ArrayList<String>());
-
-                showDetilesOnScreen();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-
     private void updateDB() {
         if (!shop.getShopName().equals(update_LAY_storeName.getEditText().getText().toString())) {
             update_LAY_storeName.setError("YOU CAN'T CHANGE THE NAME OF YOUR SHOP");
             update_LAY_storeName.getEditText().setText(shop.getShopName());
         } else {
-
             if (!shop.getDescription().equals(update_LAY_description.getEditText().getText().toString())) {
                 shop.setDescription(update_LAY_description.getEditText().getText().toString());
                 checkInputValue();
+                // Set description about the store in DB
                 mDatabase.child("Confectioneries/").child(shop.getOwner() + "/").child("description/").setValue(update_LAY_description.getEditText().getText().toString());
             }
 
+            // Store all upload images from array to DB
             if (imageList.size() != 0) {
                 for (int i = 0; i < imageList.size(); i++) {
                     shop.getImageList().add(imageList.get(i));
@@ -226,11 +186,6 @@ public class Update_screen extends AppCompatActivity {
             }
             openNewActivity();
         }
-    }
-
-    private void showDetilesOnScreen() {
-        update_LAY_storeName.getEditText().setText(shop.getShopName());
-        update_LAY_description.getEditText().setText(shop.getDescription());
     }
 
     private void openNewActivity() {
@@ -246,10 +201,25 @@ public class Update_screen extends AppCompatActivity {
         }
     }
 
+    // Create URL to image
     private String getFileExtention(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void showDetailsOnScreen() {
+        update_LAY_storeName.getEditText().setText(shop.getShopName());
+        update_LAY_description.getEditText().setText(shop.getDescription());
+    }
+
+    private void findView() {
+        update_LAY_description = findViewById(R.id.update_LAY_description);
+        update_LAY_storeName = findViewById(R.id.update_LAY_storeName);
+        update_BTN_chooseImage = findViewById(R.id.update_BTN_chooseImage);
+        update_BTN_upload = findViewById(R.id.update_BTN_upload);
+        update_BTN_finish = findViewById(R.id.update_BTN_finish);
+        update_IMG_picture = findViewById(R.id.update_IMG_picture);
     }
 
 }

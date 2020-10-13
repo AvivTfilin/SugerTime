@@ -21,31 +21,6 @@
         android:textSize="70sp"
         android:transitionName="logo_text" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <ImageView
-            android:id="@+id/login_IMG_loginImage"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp" />
-
-
-        <TextView
-            android:id="@+id/login_LBL_loginString"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/login_IMG_loginImage"
-            android:layout_toRightOf="@id/login_IMG_loginImage"
-            android:text="@string/login_loginString"
-            android:textSize="18sp" />
-
-    </RelativeLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,43 +29,90 @@
         android:layout_marginBottom="30dp"
         android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/logIn_LAY_username"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/login_username_hint">
+            android:layout_marginBottom="10dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/login_IMG_loginImage"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/login_LBL_loginString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/login_IMG_loginImage"
+                android:layout_toRightOf="@id/login_IMG_loginImage"
+                android:text="@string/login_loginString"
+                android:textSize="18sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/logIn_LAY_password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/login_password_hint"
-            app:passwordToggleEnabled="true">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/logIn_LAY_email"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:hint="@string/login_username_hint">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/login_BTN_logIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp"
-            android:background="#000"
-            android:text="@string/login_log_in_button"
-            android:textColor="#fff" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/logIn_LAY_password"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/logIn_LAY_email"
+                android:hint="@string/login_password_hint"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/login_BTN_logIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/logIn_LAY_password"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                android:background="#000"
+                android:text="@string/login_log_in_button"
+                android:textColor="#fff" />
+
+            <RelativeLayout
+                android:id="@+id/login_LAY_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/loading"
+                android:layout_centerInParent="true"
+                android:elevation="8dp"
+                android:padding="6dp">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"

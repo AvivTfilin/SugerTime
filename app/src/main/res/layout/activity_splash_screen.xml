@@ -9,13 +9,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/splash_background">
+        android:background="@drawable/background">
 
         <ImageView
             android:id="@+id/splash_IMG_imageDisplay"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:src="@drawable/splash_icon"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp" />
 
@@ -30,11 +29,11 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="90dp"
             android:textSize="80sp"
-            android:textColor="#000"
-            android:shadowDx="20"
-            android:shadowDy="20"
-            android:shadowRadius="8"
-            android:shadowColor="#fff"
+            android:textColor="#293680"
+            android:shadowDx="8"
+            android:shadowDy="8"
+            android:shadowRadius="3"
+            android:shadowColor="#000000"
             android:textStyle="bold"/>
     </RelativeLayout>
 

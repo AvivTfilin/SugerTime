@@ -81,6 +81,10 @@ public class CheckInputValue {
             password.setError("Field cannot be empty");
             return false;
         }
+        else if(val.length() < 6) {
+            password.setError("Password too short, you need more " + (6-val.length() + " char"));
+            return false;
+        }
         else {
             password.setError(null);
             password.setErrorEnabled(false);

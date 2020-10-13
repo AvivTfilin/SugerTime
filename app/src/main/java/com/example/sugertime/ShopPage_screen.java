@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,134 +13,144 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 public class ShopPage_screen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private TextView seller_LBL_description;
-    private TextView seller_LBL_shopName;
-    private DatabaseReference reference;
-
-    private ReviewFragment reviewFragment;
-
-
-    private FloatingActionButton seller_BTN_chatWithSeller;
-
-    private RecyclePictureAdapter recyclePictureAdapter;
-
-    private RecyclerView seller_RCV_pictureList;
-    private Review review;
-
-    private Button seller_BTN_review;
-
-    private Shop shop;
-    private String owner;
-    private String user;
-
-    private boolean isBuyer;
-
-    private String saveUser;
-
+    private TextView shop_LBL_description;
+    private TextView shop_LBL_shopName;
+    private FloatingActionButton shop_BTN_chatWithSeller;
+    private Button shop_BTN_review;
 
     private DrawerLayout shop_LAY_drawerLayout;
     private NavigationView shop_LAY_view;
     private Toolbar shop_TLB_menu;
 
+    private DatabaseReference reference;
 
+    private ReviewFragment reviewFragment;
+
+    private RecyclePictureAdapter recyclePictureAdapter;
+    private RecyclerView shop_RCV_pictureList;
+    private Review review;
+
+    private Shop shop;
+    private String user;
+
+    private boolean isBuyer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_page_screen);
 
-        user = getIntent().getStringExtra("user");
+        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        review = new Review();
+        shop = new Shop();
 
-        Log.d("hello", "what what");
-        Log.d("hello", "the user is: " + user);
 
         findView();
         initButton();
+        menuNavigation();
+        readDataFromActivity();
 
+        if (shop != null) {
+            showView();
+            showShopInfo();
+            showReview(shop.getShopName());
+        }
+    }
 
-        /////
+    private void initButton() {
+        shop_BTN_chatWithSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chatWithSeller();
+            }
+        });
+
+        shop_BTN_review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reviewScreen();
+            }
+        });
+    }
+
+    private void showView() {
+        if (isBuyer) {
+            shop_TLB_menu.setVisibility(View.GONE);
+            shop_BTN_review.setVisibility(View.VISIBLE);
+            shop_BTN_chatWithSeller.setVisibility(View.VISIBLE);
+        } else {
+            shop_BTN_chatWithSeller.setVisibility(View.GONE);
+            shop_BTN_review.setVisibility(View.GONE);
+        }
+    }
+
+    // // Get information from previous activity
+    private void readDataFromActivity() {
+        isBuyer = getIntent().getBooleanExtra("isBuyer", false);
+
+        Bundle data = getIntent().getExtras();
+        assert data != null;
+        shop = (Shop) data.getSerializable("shopInfo");
+    }
+
+    // Setting menu navigation
+    private void menuNavigation() {
         shop_LAY_view.bringToFront();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, shop_LAY_drawerLayout, shop_TLB_menu, R.string.menu_open, R.string.menu_close);
 
         shop_LAY_drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
         shop_LAY_view.setNavigationItemSelectedListener(this);
-
-        ///
-        review = new Review();
-
-        owner = getIntent().getStringExtra("username");
-        isBuyer = getIntent().getBooleanExtra("isBuyer", false);
-
-        Bundle data = getIntent().getExtras();
-        shop = (Shop) data.getSerializable("shopInfo");
-
-        if (shop != null) {
-
-            Log.d("hello","we enter this shop, the shop name is: " + shop.getShopName() + "and the owner is: " + shop.getOwner());
-
-            showShopInfo();
-            showReview(shop.getShopName());
-
-            if (isBuyer) {
-                shop_TLB_menu.setVisibility(View.GONE);
-                seller_BTN_review.setVisibility(View.VISIBLE);
-                seller_BTN_chatWithSeller.setVisibility(View.VISIBLE);
-            } else {
-                seller_BTN_chatWithSeller.setVisibility(View.GONE);
-                seller_BTN_review.setVisibility(View.GONE);
-            }
-
-        } else {
-            shop = new Shop();
-            seller_BTN_chatWithSeller.setVisibility(View.GONE);
-            seller_BTN_review.setVisibility(View.GONE);
-
-            readShopFromDB();
-        }
-
-
+        toggle.syncState();
     }
 
-    private void showReview(String shopName) {
+    // Display on screen shop details
+    private void showShopInfo() {
+        shop_LBL_shopName.setText(shop.getShopName().toUpperCase());
+        shop_LBL_description.setText(shop.getDescription());
 
+        showPicture();
+    }
+
+    // Show all store picture in recycle view
+    private void showPicture() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        shop_RCV_pictureList.setLayoutManager(linearLayoutManager);
+        shop_RCV_pictureList.setItemAnimator(new DefaultItemAnimator());
+
+        if (shop.getImageList() != null) {
+            recyclePictureAdapter = new RecyclePictureAdapter(getApplicationContext(), shop.getImageList());
+            shop_RCV_pictureList.setAdapter(recyclePictureAdapter);
+        }
+    }
+
+    // Read review about the store from DB
+    private void showReview(String shopName) {
         reference = FirebaseDatabase.getInstance().getReference("Reviews/").child(shopName + "/");
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
-                };
-                review.setReviews(snapshot.child("reviews/").getValue(t));
-                review.setRating(snapshot.child("rating").getValue(double.class));
-                review.setNumOfReview(snapshot.child("numOfReview").getValue(int.class));
-                review.setShopName(snapshot.child("shopName").getValue(String.class));
-                review.setNumOfStar(snapshot.child("numOfStar").getValue(int.class));
+                review = snapshot.getValue(Review.class);
 
+                // Show review about the store in recycle view
                 reviewFragment = new ReviewFragment();
 
                 Bundle bundle = new Bundle();
@@ -149,13 +158,11 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = manager.beginTransaction();
-                fragmentTransaction.add(R.id.seller_LAY_reviewList, reviewFragment);
+                fragmentTransaction.add(R.id.shop_LAY_reviewList, reviewFragment);
 
                 reviewFragment.setArguments(bundle);
 
                 fragmentTransaction.commit();
-
-
             }
 
             @Override
@@ -165,109 +172,44 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
         });
     }
 
-    private void initButton() {
+    private void chatWithSeller() {
+        Intent intent = new Intent(getApplicationContext(), Chat_screen.class);
 
-        seller_BTN_chatWithSeller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Chat_screen.class);
-                Log.d("hello", "before we pass activity the user is: " + user + "and the shop owner is: " + shop.getOwner());
-                intent.putExtra("sender", user);
-                intent.putExtra("sendTo", shop.getShopName());
+        intent.putExtra("sender", user);
+        intent.putExtra("sendTo", shop.getOwner());
 
-                startActivity(intent);
-            }
-        });
+        startActivity(intent);
+    }
 
+    private void reviewScreen() {
+        Intent intent = new Intent(getApplicationContext(), Review_screen.class);
 
+        intent.putExtra("shopInfo", shop);
+        intent.putExtra("user", user);
 
-        seller_BTN_review.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Review_screen.class);
-                intent.putExtra("shop", shop);
-                intent.putExtra("user" , user);
-                startActivity(intent);
-                finish();
-            }
-        });
+        startActivity(intent);
+        finish();
     }
 
     private void updatePage() {
         Intent newIntent = new Intent(getApplicationContext(), Update_screen.class);
+
         newIntent.putExtra("shopInfo", shop);
-        newIntent.putExtra("username", owner);
         startActivity(newIntent);
+
         finish();
     }
 
-
-    private void readShopFromDB() {
-        reference = FirebaseDatabase.getInstance().getReference("Confectioneries/");
-
-        Query checkUser = reference.orderByChild("owner").equalTo(owner);
-
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-
-                    shop.setShopName(snapshot.child(owner).child("shopName").getValue(String.class));
-                    shop.setDescription(snapshot.child(owner).child("description").getValue(String.class));
-                    shop.setOwner(snapshot.child(owner).child("owner").getValue(String.class));
-
-                    GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
-                    };
-                    shop.setImageList(snapshot.child(owner).child("imageList").getValue(t));
-
-                    showShopInfo();
-                    showReview(shop.getShopName());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-
-    private void showShopInfo() {
-        seller_LBL_shopName.setText(shop.getShopName().toUpperCase());
-        seller_LBL_description.setText(shop.getDescription());
-
-        showPicture();
-    }
-
-    private void showPicture() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-
-        seller_RCV_pictureList.setLayoutManager(linearLayoutManager);
-        seller_RCV_pictureList.setItemAnimator(new DefaultItemAnimator());
-
-        if(shop.getImageList() != null) {
-
-            recyclePictureAdapter = new RecyclePictureAdapter(getApplicationContext(), shop.getImageList());
-            seller_RCV_pictureList.setAdapter(recyclePictureAdapter);
-        }
-
-    }
-
     private void findView() {
-        seller_LBL_shopName = findViewById(R.id.seller_LBL_shopName);
-        seller_LBL_description = findViewById(R.id.seller_LBL_description);
-        seller_RCV_pictureList = findViewById(R.id.seller_RCV_pictureList);
-        seller_BTN_review = findViewById(R.id.seller_BTN_review);
-        seller_BTN_chatWithSeller = findViewById(R.id.seller_BTN_chatWithSeller);
-
-
-
+        shop_LBL_shopName = findViewById(R.id.shop_LBL_shopName);
+        shop_LBL_description = findViewById(R.id.shop_LBL_description);
+        shop_RCV_pictureList = findViewById(R.id.shop_RCV_pictureList);
+        shop_BTN_review = findViewById(R.id.shop_BTN_review);
+        shop_BTN_chatWithSeller = findViewById(R.id.shop_BTN_chatWithSeller);
         shop_LAY_drawerLayout = findViewById(R.id.shop_LAY_drawerLayout);
         shop_LAY_view = findViewById(R.id.shop_LAY_view);
         shop_TLB_menu = findViewById(R.id.shop_TLB_menu);
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -282,7 +224,7 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
 
             case R.id.main_NAV_chatList:
                 intent = new Intent(getApplicationContext(), Chats_list_screen.class);
-                intent.putExtra("user", shop.getShopName());
+                intent.putExtra("user", shop.getOwner());
                 startActivity(intent);
                 break;
 
@@ -291,8 +233,6 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
                 break;
 
         }
-
-
 
         return true;
     }

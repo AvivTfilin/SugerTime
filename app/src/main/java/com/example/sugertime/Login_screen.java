@@ -5,32 +5,37 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class Login_screen extends AppCompatActivity {
 
     private Button login_BTN_signUp;
     private Button login_BTN_logIn;
+    private ImageView login_IMG_loginImage;
+    private ImageView login_IMG_singUpImage;
+    private RelativeLayout login_LAY_loading;
 
-    private TextInputLayout logIn_LAY_username;
+    private FirebaseAuth mAuth;
+
+    private TextInputLayout logIn_LAY_email;
     private TextInputLayout logIn_LAY_password;
 
     private CheckInputValue checkInputValue;
-
-    private ImageView login_IMG_loginImage;
-    private ImageView login_IMG_singUpImage;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +43,12 @@ public class Login_screen extends AppCompatActivity {
         setContentView(R.layout.activity_login_screen);
 
         checkInputValue = new CheckInputValue();
+        mAuth = FirebaseAuth.getInstance();
 
         findView();
         initButton();
 
+        login_LAY_loading.setVisibility(View.GONE);
         login_IMG_loginImage.setImageResource(R.drawable.ic_signin);
         login_IMG_singUpImage.setImageResource(R.drawable.ic_addpeople);
     }
@@ -63,46 +70,55 @@ public class Login_screen extends AppCompatActivity {
         });
     }
 
+    // Checks if the data entered by user is logically correct
     private void checkUserInput() {
-
-        if (!checkInputValue.validateUserName(logIn_LAY_username) | !checkInputValue.validatePassword(logIn_LAY_password)) {
+        if (!checkInputValue.validateEmail(logIn_LAY_email) | !checkInputValue.validatePassword(logIn_LAY_password)) {
             return;
         } else {
-            isUser();
+            isUserExist();
         }
     }
 
-    private void isUser() {
-
-        final String userEnteredUsername = logIn_LAY_username.getEditText().getText().toString().trim();
+    // Checks if a user is registered in the system
+    private void isUserExist() {
+        final String userEnteredEmail = logIn_LAY_email.getEditText().getText().toString().trim();
         final String userEnteredPassword = logIn_LAY_password.getEditText().getText().toString().trim();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users/");
-        Query checkUser = reference.orderByChild("userName").equalTo(userEnteredUsername);
+        login_LAY_loading.setVisibility(View.VISIBLE);
 
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        mAuth.signInWithEmailAndPassword(userEnteredEmail, userEnteredPassword)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // If user exist , we read his data from DB
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            readUserFromDB(user.getUid());
+                        } else {
+                            // If the system is unable to find the user, it issues an error message accordingly
+                            login_LAY_loading.setVisibility(View.GONE);
+
+                            if (task.getException().getMessage().contains("email")) {
+                                logIn_LAY_email.setError(task.getException().getMessage());
+                            } else if (task.getException().getMessage().contains("password")) {
+                                logIn_LAY_password.setError(task.getException().getMessage());
+                            } else if (task.getException().getMessage().contains("no user")) {
+                                logIn_LAY_email.setError(task.getException().getMessage());
+                            }
+                        }
+                    }
+                });
+    }
+
+    // Read user data from DB
+    void readUserFromDB(final String userID) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users/").child(userID);
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    logIn_LAY_username.setError(null);
-                    logIn_LAY_username.setErrorEnabled(false);
-                    String passwordFromDB = snapshot.child(userEnteredUsername).child("password").getValue(String.class);
-                    if (passwordFromDB.equals(userEnteredPassword)) {
-                        logIn_LAY_password.setError(null);
-                        logIn_LAY_password.setErrorEnabled(false);
-
-                        goToNewActivity(snapshot.child(userEnteredUsername).child("role").getValue(String.class),
-                                snapshot.child(userEnteredUsername).child("createPage").getValue(boolean.class),
-                                userEnteredUsername);
-
-                    } else {
-                        logIn_LAY_password.setError("Wrong Password");
-                        logIn_LAY_password.requestFocus();
-                    }
-                } else {
-                    logIn_LAY_username.setError("No such User exist");
-                    logIn_LAY_username.requestFocus();
-                }
+                User user = snapshot.getValue(User.class);
+                newActivity(user, userID);
             }
 
             @Override
@@ -112,32 +128,46 @@ public class Login_screen extends AppCompatActivity {
         });
     }
 
-    private void goToNewActivity(String clientType, boolean createPage, String username) {
+
+    private void newActivity(User user, final String userID) {
         Intent intent;
-        if(clientType.equals("Seller")){
-            if (createPage){
-                intent = new Intent(getApplicationContext(), ShopPage_screen.class);
-            } else {
-                intent = new Intent(getApplicationContext(), Update_screen.class);
+        // If the user is a seller, we will read from the DB the information about his store
+        if (user.getRole().equals("Seller")) {
+            readShopFromDB(userID);
+        } else {
+            intent = new Intent(getApplicationContext(), Buyer_screen.class);
+            startActivity(intent);
+        }
+    }
+
+    // Read user store from DB
+    private void readShopFromDB(final String userID) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Confectioneries/").child(userID);
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Shop shop = snapshot.getValue(Shop.class);
+                Intent intent = new Intent(getApplicationContext(), ShopPage_screen.class);
+
+                intent.putExtra("shopInfo", shop);
+                startActivity(intent);
             }
 
-        }
-        else {
-            intent = new Intent(getApplicationContext(), Buyer_screen.class);
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        intent.putExtra("username", username);
-
-        startActivity(intent);
-        finish();
+            }
+        });
     }
 
     private void findView() {
         login_BTN_signUp = findViewById(R.id.login_BTN_signup);
         login_BTN_logIn = findViewById(R.id.login_BTN_logIn);
-        logIn_LAY_username = findViewById(R.id.logIn_LAY_username);
+        logIn_LAY_email = findViewById(R.id.logIn_LAY_email);
         logIn_LAY_password = findViewById(R.id.logIn_LAY_password);
         login_IMG_loginImage = findViewById(R.id.login_IMG_loginImage);
         login_IMG_singUpImage = findViewById(R.id.login_IMG_singUpImage);
+        login_LAY_loading = findViewById(R.id.login_LAY_loading);
     }
 }

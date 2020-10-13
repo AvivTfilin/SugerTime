@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,11 +16,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Review_screen extends AppCompatActivity {
 
@@ -30,9 +27,12 @@ public class Review_screen extends AppCompatActivity {
     private Button review_BTN_submit;
     private ImageView review_IMG_back;
     private ImageView review_IMG_image;
+
     private DatabaseReference mDatabase;
-    private Shop shop;
+
     private Intent intent;
+
+    private Shop shop;
     private String user;
     private Review review;
 
@@ -41,27 +41,21 @@ public class Review_screen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_screen);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("Reviews/");
-
-
-
         intent = getIntent();
         Bundle data = getIntent().getExtras();
-        shop = (Shop) data.getSerializable("shop");
+        shop = (Shop) data.getSerializable("shopInfo");
+
         user = intent.getStringExtra("user");
 
         findView();
         initButton();
 
         review_IMG_image.setImageResource(R.drawable.ic_bakery);
+        review_IMG_back.setImageResource(R.drawable.ic_back);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Reviews/").child(shop.getShopName() + "/");
 
         review = new Review();
-
-        review_IMG_back.setImageResource(R.drawable.ic_back);
-
-
     }
 
     private void initButton() {
@@ -80,22 +74,23 @@ public class Review_screen extends AppCompatActivity {
         });
     }
 
-    private void saveData(){
+    // Read review about the store and Update store review in DB
+    private void saveData() {
+        // Read all review about the store from DB
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-               double rating =  snapshot.child("rating/").getValue(double.class);
-               int numOfStar = snapshot.child("numOfStar/").getValue(int.class);
-               int numOfReview = snapshot.child("numOfReview/").getValue(int.class);
+                double rating = snapshot.child("rating/").getValue(double.class);
+                int numOfStar = snapshot.child("numOfStar/").getValue(int.class);
+                int numOfReview = snapshot.child("numOfReview/").getValue(int.class);
 
-
-                GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
+                };
                 ArrayList<String> reviewsArray = snapshot.child("reviews/").getValue(t);
 
-
-               updateDataInDB(rating, numOfStar, numOfReview);
-               returnToBuyerScreen();
+                updateDataInDB(rating, numOfStar, numOfReview);
+                returnToBuyerScreen();
             }
 
             @Override
@@ -109,16 +104,17 @@ public class Review_screen extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ShopPage_screen.class);
         intent.putExtra("shopInfo", shop);
-        intent.putExtra("isBuyer",true);
+        intent.putExtra("isBuyer", true);
         intent.putExtra("user", user);
         startActivity(intent);
         finish();
 
     }
 
-    private void updateDataInDB(double rating, int numOfStar ,int numOfReview) {
+    // Update the review and information about the store and save it in DB
+    private void updateDataInDB(double rating, int numOfStar, int numOfReview) {
 
-        if(!review_LBL_buyerReview.getText().toString().equals("")) {
+        if (!review_LBL_buyerReview.getText().toString().equals("")) {
             mDatabase.child("reviews/").child("" + numOfReview).setValue(review_LBL_buyerReview.getText().toString());
 
             numOfReview++;

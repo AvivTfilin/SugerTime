@@ -45,7 +45,8 @@ public class ReviewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(rootView==null) {
+
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.activity_review_fragment, container, false);
         }
 
@@ -55,14 +56,13 @@ public class ReviewFragment extends Fragment {
         score = rootView.findViewById(R.id.reviewFragment_LBL_totalScore);
         reviewFragment_LBL_text = rootView.findViewById(R.id.reviewFragment_LBL_text);
 
-        score.setText("This Shop have in total: " + new DecimalFormat("##.##").format(review.getRating()/review.getNumOfStar()) + " stars");
+        score.setText("This Shop have in total: " + new DecimalFormat("##.##").format(review.getRating() / review.getNumOfStar()) + " stars");
 
-        if(review.getNumOfReview() != 0){
+        if (review.getNumOfReview() != 0) {
             reviewFragment_LBL_text.setVisibility(View.GONE);
 
             layoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(layoutManager);
-
 
             adapter = new ReviewListAdapter(review.getReviews());
 

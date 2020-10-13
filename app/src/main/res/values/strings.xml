@@ -5,7 +5,7 @@
 
     <string name="login_title">Hello there\nWelcome Back</string>
     <string name="login_loginString">Sign In to continue</string>
-    <string name="login_username_hint">Username</string>
+    <string name="login_username_hint">Email</string>
     <string name="login_password_hint">Password</string>
     <string name="login_log_in_button">LOG IN</string>
     <string name="login_sing_up_string">New User?</string>
@@ -52,6 +52,8 @@
     <string name="chats_titel">Chats:</string>
 
     <string name="header_titel">SugerTime</string>
+
+    <string name="login_progressBar">Loading...</string>
 
     <string name="menu_open">Open</string>
     <string name="menu_close">Close</string>

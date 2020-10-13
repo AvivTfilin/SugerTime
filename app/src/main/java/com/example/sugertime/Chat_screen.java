@@ -6,11 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,26 +21,23 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.PriorityQueue;
 
 public class Chat_screen extends AppCompatActivity {
 
     private MessageAdapter messageAdapter;
-    private List<Message> messagesList;
     private RecyclerView chat_LAY_chatList;
     private LinearLayoutManager linearLayoutManager;
+
     private DatabaseReference reference;
 
     private ImageView chat_IMG_back;
     private ImageView chat_IMG_send;
-
-    private String username;
-    private String sendTo;
-
-
     private TextInputLayout chat_LBL_writeText;
     private TextView chat_LBL_name;
 
+    private List<Message> messagesList;
+    private String username;
+    private String sendTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +52,8 @@ public class Chat_screen extends AppCompatActivity {
         initRecyclerView();
         initButton();
 
-
-        chat_LBL_name.setText(sendTo);
+        readName();
         readMessageFromDB(username, sendTo);
-
-
     }
 
     private void initButton() {
@@ -81,7 +71,7 @@ public class Chat_screen extends AppCompatActivity {
 
                 if (!text.equals("")) {
                     sendMessage(username, sendTo, text);
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "You can't send empty message!", Toast.LENGTH_SHORT).show();
 
                 }
@@ -96,6 +86,7 @@ public class Chat_screen extends AppCompatActivity {
         chat_IMG_send.setImageResource(R.drawable.ic_fork);
     }
 
+    // Init recycle view for chat
     private void initRecyclerView() {
         chat_LAY_chatList.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -112,7 +103,8 @@ public class Chat_screen extends AppCompatActivity {
 
     }
 
-    private void readMessageFromDB(final String firsUser, final String secondUser ) {
+    // Read previous massage from DB
+    private void readMessageFromDB(final String firsUser, final String secondUser) {
         messagesList = new ArrayList<>();
 
         reference = FirebaseDatabase.getInstance().getReference("Chats/");
@@ -120,15 +112,17 @@ public class Chat_screen extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messagesList.clear();
+                // Find previous massage between two users
                 for (DataSnapshot snap : snapshot.getChildren()) {
-                    if(snap.getValue(Message.class) != null){
+                    if (snap.getValue(Message.class) != null) {
                         Message message = snap.getValue(Message.class);
 
-                        if(message.getReceiver().equals(secondUser) && message.getSender().equals(firsUser) ||
+                        if (message.getReceiver().equals(secondUser) && message.getSender().equals(firsUser) ||
                                 message.getSender().equals(secondUser) && message.getReceiver().equals(firsUser)) {
                             messagesList.add(message);
                         }
 
+                        // Show previous massage with recycle view
                         messageAdapter = new MessageAdapter(getApplicationContext(), messagesList, firsUser);
                         chat_LAY_chatList.setAdapter(messageAdapter);
                     }
@@ -142,31 +136,59 @@ public class Chat_screen extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(final String sender, final String receiver, String message) {
+    // Show the user I correspond with
+    private void readName() {
+        reference = FirebaseDatabase.getInstance().getReference("Users/").child(sendTo);
 
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+
+                // If user is seller show his store name
+                if (user.getRole().equals("Seller")) {
+                    chat_LBL_name.setText(user.getShopName());
+                } else {
+                    chat_LBL_name.setText(user.getUserName());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    // Send massage
+    private void sendMessage(final String sender, final String receiver, String message) {
         reference = FirebaseDatabase.getInstance().getReference();
 
+        // Save information about massage in Hash Map
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
         hashMap.put("message", message);
 
+        // Save Hash map in DB
         reference.child("Chats").push().setValue(hashMap);
 
+        // Create chat list for user, save the users we talk to in DB
         reference = FirebaseDatabase.getInstance().getReference("ChatList/").child(sender).child(receiver);
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()) {
+                if (!snapshot.exists()) {
                     reference.child("id").setValue(receiver);
 
+                    // Create the list for the other side as well
                     reference = FirebaseDatabase.getInstance().getReference("ChatList/").child(receiver).child(sender);
 
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(!snapshot.exists()) {
+                            if (!snapshot.exists()) {
                                 reference.child("id").setValue(sender);
                             }
                         }
@@ -184,12 +206,5 @@ public class Chat_screen extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
-
-
     }
 }

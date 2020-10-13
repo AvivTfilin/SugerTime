@@ -42,7 +42,7 @@
                 app:navigationIcon="@drawable/ic_menu" />
 
             <TextView
-                android:id="@+id/seller_LBL_shopName"
+                android:id="@+id/shop_LBL_shopName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -55,7 +55,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/seller_BTN_chatWithSeller"
+                android:id="@+id/shop_BTN_chatWithSeller"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -83,7 +83,7 @@
             android:textSize="35sp" />
 
         <TextView
-            android:id="@+id/seller_LBL_description"
+            android:id="@+id/shop_LBL_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -97,13 +97,13 @@
             android:textSize="15sp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/seller_RCV_pictureList"
+            android:id="@+id/shop_RCV_pictureList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp" />
 
         <Button
-            android:id="@+id/seller_BTN_review"
+            android:id="@+id/shop_BTN_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -111,7 +111,7 @@
             android:text="@string/seller_button_review" />
 
         <FrameLayout
-            android:id="@+id/seller_LAY_reviewList"
+            android:id="@+id/shop_LAY_reviewList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

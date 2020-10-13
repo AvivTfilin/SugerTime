@@ -42,8 +42,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        holder.userList_LBL_name.setText(nameList.get(position).id);
-
+        getName(nameList.get(position).getId(), holder.userList_LBL_name);
         readLastMessage(nameList.get(position).getId(), holder.userList_LBL_lastMessage);
 
         holder.userList_LAY_userList.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +78,30 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         }
     }
 
+
+    private void getName(final String user, final TextView name) {
+        final DatabaseReference reference;
+
+        reference = FirebaseDatabase.getInstance().getReference("Users/").child(user);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user.getRole().equals("Seller")) {
+                    name.setText(user.getShopName());
+                } else {
+                    name.setText(user.getUserName());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void readLastMessage(final String user, final TextView lastMessage) {
         DatabaseReference reference;
 
@@ -87,14 +110,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    for(DataSnapshot snap : snapshot.getChildren()) {
-                        Message message = snap.getValue(Message.class);
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    Message message = snap.getValue(Message.class);
 
-                        if (message.getReceiver().equals(username) && message.getSender().equals(user)
-                                || message.getReceiver().equals(user) && message.getSender().equals(username)) {
-                                lastMessage.setText(message.getMessage());
-                        }
+                    if (message.getReceiver().equals(username) && message.getSender().equals(user)
+                            || message.getReceiver().equals(user) && message.getSender().equals(username)) {
+                        lastMessage.setText(message.getMessage());
                     }
+                }
             }
 
             @Override

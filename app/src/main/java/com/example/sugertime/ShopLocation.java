@@ -7,7 +7,7 @@ public class ShopLocation {
     private double lat = 0;
     private double lon = 0;
 
-    public  ShopLocation() {
+    public ShopLocation() {
 
     }
 
