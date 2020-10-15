@@ -11,11 +11,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,6 +36,7 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
     private TextView shop_LBL_shopName;
     private FloatingActionButton shop_BTN_chatWithSeller;
     private Button shop_BTN_review;
+    private ImageView shop_IMG_instagram;
 
     private DrawerLayout shop_LAY_drawerLayout;
     private NavigationView shop_LAY_view;
@@ -87,6 +91,34 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
                 reviewScreen();
             }
         });
+
+        shop_IMG_instagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openInstagram();
+            }
+        });
+    }
+
+    private void openInstagram() {
+        String nickname = shop.getInstagramURL();
+
+        if(nickname != "") {
+            Uri uri = Uri.parse("http://instagram.com/_u/" + nickname);
+            Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+
+            likeIng.setPackage("com.instagram.android");
+
+            try {
+                startActivity(likeIng);
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://instagram.com/" + nickname)));
+            }
+        } else {
+            shop_IMG_instagram.setVisibility(View.GONE);
+        }
+
     }
 
     private void showView() {
@@ -209,6 +241,7 @@ public class ShopPage_screen extends AppCompatActivity implements NavigationView
         shop_LAY_drawerLayout = findViewById(R.id.shop_LAY_drawerLayout);
         shop_LAY_view = findViewById(R.id.shop_LAY_view);
         shop_TLB_menu = findViewById(R.id.shop_TLB_menu);
+        shop_IMG_instagram = findViewById(R.id.shop_IMG_instagram);
     }
 
     @Override

@@ -8,6 +8,7 @@ public class Shop implements Serializable {
     private String shopName = "";
     private String description = "";
     private String owner = "";
+    private String instagramURL = "";
     private ArrayList<String> imageList;
 
     public ArrayList<String> getImageList() {
@@ -22,11 +23,12 @@ public class Shop implements Serializable {
 
     }
 
-    public Shop(String shopName, String description, String owner, ArrayList<String> imageList) {
+    public Shop(String shopName, String description, String owner, ArrayList<String> imageList, String instagramURL) {
         this.shopName = shopName;
         this.description = description;
         this.owner = owner;
         this.imageList = imageList;
+        this.instagramURL = instagramURL;
     }
 
     public String getShopName() {
@@ -51,5 +53,13 @@ public class Shop implements Serializable {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getInstagramURL() {
+        return instagramURL;
+    }
+
+    public void setInstagramURL(String instagramURL) {
+        this.instagramURL = instagramURL;
     }
 }

@@ -27,6 +27,7 @@ public class CreateShop_screen extends AppCompatActivity {
 
     private TextInputLayout create_LAY_storeName;
     private TextInputLayout create_LAY_address;
+    private TextInputLayout create_LAY_instagram;
     private Button create_BTN_submit;
     private ImageView create_IMG_image;
 
@@ -140,7 +141,8 @@ public class CreateShop_screen extends AppCompatActivity {
 
     private void addShopToDB() {
         ArrayList<String> imageList = new ArrayList<>();
-        shop = new Shop(create_LAY_storeName.getEditText().getText().toString(), "", user, imageList);
+        shop = new Shop(create_LAY_storeName.getEditText().getText().toString(), "",
+                user, imageList, create_LAY_instagram.getEditText().getText().toString());
 
         // Save store in DB
         mDatabase.child("Confectioneries/").child(shop.getOwner()).setValue(shop);
@@ -168,7 +170,7 @@ public class CreateShop_screen extends AppCompatActivity {
         create_LAY_address = findViewById(R.id.create_LAY_address);
         create_BTN_submit = findViewById(R.id.create_BTN_submit);
         create_IMG_image = findViewById(R.id.create_IMG_image);
-
+        create_LAY_instagram = findViewById(R.id.create_LAY_instagram);
         create_IMG_image.setImageResource(R.drawable.ic_build);
     }
 }
