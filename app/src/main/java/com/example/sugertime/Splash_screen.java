@@ -48,7 +48,7 @@ public class Splash_screen extends AppCompatActivity {
         findView();
         initAnimation();
 
-        splash_IMG_imageDisplay.setImageResource(R.drawable.ic_doughnut);
+        splash_IMG_imageDisplay.setImageResource(R.drawable.icon_dougnnut);
 
         checkIfGPSOn();
 

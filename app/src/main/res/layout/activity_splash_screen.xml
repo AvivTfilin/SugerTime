@@ -9,12 +9,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background">
+        android:background="#7903A9F4">
 
         <ImageView
             android:id="@+id/splash_IMG_imageDisplay"
             android:layout_width="300dp"
             android:layout_height="300dp"
+
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp" />
 
@@ -22,19 +23,19 @@
             android:id="@+id/splash_LBL_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/handlee"
-            android:text="@string/splash_title"
-            android:transitionName="logo_text"
             android:layout_below="@id/splash_IMG_imageDisplay"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="90dp"
-            android:textSize="80sp"
-            android:textColor="#293680"
+            android:fontFamily="@font/goudy_bookletter_1911"
+            android:shadowColor="#000000"
             android:shadowDx="8"
             android:shadowDy="8"
             android:shadowRadius="3"
-            android:shadowColor="#000000"
-            android:textStyle="bold"/>
+            android:text="@string/splash_title"
+            android:textColor="#293680"
+            android:textSize="80sp"
+            android:textStyle="bold"
+            android:transitionName="logo_text" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
